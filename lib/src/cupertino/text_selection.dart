@@ -439,7 +439,7 @@ class _CupertinoTextSelectionControls extends SelectionControls {
         borderRadius: null,
         pressedOpacity: 0.7,
         onPressed: () => onPressed!(delegate.controller),
-        minimumSize: const Size(_kPopupMenuHeight, _kPopupMenuHeight),
+        minSize: _kPopupMenuHeight,
         child: icon == null
             ? textWidget()
             : Row(

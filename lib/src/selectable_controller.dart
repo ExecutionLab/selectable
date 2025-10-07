@@ -79,6 +79,31 @@ class SelectableController extends ChangeNotifier {
     return selectWordsBetweenIndexes(0, null, key: key);
   }
 
+  /// Attempts to select all the words in the first line of text, if any.
+  bool selectFirstLine({int? key}) {
+    final paragraph = _selections.cachedParagraphs.list.firstOrNull;
+    if (paragraph == null) return false;
+    final startAnchor = paragraph.anchorAtCharIndex(0);
+    if (startAnchor == null) return false;
+    SelectionAnchor? endAnchor;
+    for (int index = 1; index < paragraph.text.length; ++index) {
+      final anchor = paragraph.anchorAtCharIndex(index);
+      final top = anchor?.rects?.firstOrNull?.top;
+      if (top != startAnchor.rects.firstOrNull?.top) {
+        endAnchor = paragraph.anchorAtCharIndex(index - 1);
+        break;
+      }
+      if (index == paragraph.text.length - 1) {
+        endAnchor = paragraph.anchorAtCharIndex(index);
+        break;
+      }
+    }
+    if (endAnchor == null) {
+      return selectWordAtIndex(0);
+    }
+    return selectWordsBetweenAnchors(startAnchor, endAnchor);
+  }
+
   /// Attempts to select the word at [index], returning `true` if successful.
   bool selectWordAtIndex(int index, {int? key}) =>
       selectWordsBetweenIndexes(index, index, key: key);
