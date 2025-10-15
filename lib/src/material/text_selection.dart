@@ -12,8 +12,7 @@ import '../selection_controls.dart';
 // ignore_for_file: cascade_invocations, prefer_const_constructors
 
 /// Text selection controls that follow the Material Design specification.
-final SelectionControls exMaterialTextSelectionControls =
-    _MaterialTextSelectionControls();
+final SelectionControls exMaterialTextSelectionControls = _MaterialTextSelectionControls();
 
 const double _kHandleSize = 22.0;
 const double _kButtonPadding = 10.0;
@@ -90,14 +89,12 @@ class _Button extends StatelessWidget {
 
   Widget get _text => Text(
         icon == null ? title : ' $title',
-        style: popupMenuTextStyle.copyWith(
-            color: isDarkMode! ? Colors.white : Colors.black),
+        style: popupMenuTextStyle.copyWith(color: isDarkMode! ? Colors.white : Colors.black),
       );
 
   @override
   Widget build(BuildContext context) => TextButton(
-        style: TextButton.styleFrom(
-            padding: EdgeInsets.symmetric(horizontal: _kButtonPadding)),
+        style: TextButton.styleFrom(padding: EdgeInsets.symmetric(horizontal: _kButtonPadding)),
         onPressed: onPressed,
         child: icon == null
             ? _text
@@ -106,8 +103,7 @@ class _Button extends StatelessWidget {
                 children: [
                   Icon(
                     icon,
-                    size: 20.0 *
-                        (MediaQuery.textScalerOf(context).scale(18) / 18.0),
+                    size: 20.0 * (MediaQuery.textScalerOf(context).scale(18) / 18.0),
                     color: isDarkMode! ? Colors.white : Colors.black,
                   ),
                   _text,
@@ -176,8 +172,7 @@ class _TextSelectionHandlePainter extends CustomPainter {
 class _MaterialTextSelectionControls extends SelectionControls {
   /// Returns the size of the Material handle.
   @override
-  Size getHandleSize(double textLineHeight) =>
-      const Size(_kHandleSize, _kHandleSize);
+  Size getHandleSize(double textLineHeight) => const Size(_kHandleSize, _kHandleSize);
 
   /// Builder for material-style copy/paste text selection popup menu.
   @override
@@ -192,41 +187,39 @@ class _MaterialTextSelectionControls extends SelectionControls {
     assert(debugCheckHasMediaQuery(context));
     assert(debugCheckHasMaterialLocalizations(context));
 
-    const double popupMenuHeightNeeded = _kPopupMenuScreenPadding +
-        _kPopupMenuHeight +
-        _kPopupMenuContentDistance;
+    final padding = MediaQuery.paddingOf(context);
+
+    // TextSelectionPoint(rects.first.bottomLeft, TextDirection.ltr),
+    // TextSelectionPoint(rects.last.bottomRight, TextDirection.ltr)
+
+    final double popupMenuHeightNeeded =
+        padding.top + _kPopupMenuScreenPadding + _kPopupMenuHeight + _kPopupMenuContentDistance;
 
     final primaryY = math.min(
-        viewport.bottom - (_kPopupMenuContentDistance * 3.0),
-        selectionRects!.first.top - _kPopupMenuContentDistance);
+        viewport.bottom - (_kPopupMenuContentDistance * 2.0) - _kPopupMenuHeight,
+        selectionRects!.first.top - _kPopupMenuContentDistance - _kPopupMenuHeight);
 
     double? secondaryY;
 
     // Will fit below?
-    if (viewport.bottom - selectionRects.last.bottom >=
-        _kHandleSize + _kPopupMenuHeight + _kPopupMenuContentDistance) {
-      secondaryY = math.max(
-          viewport.top + _kPopupMenuContentDistance + _kPopupMenuHeight,
-          selectionRects.last.bottom +
-              _kHandleSize +
-              _kPopupMenuHeight +
-              _kPopupMenuContentDistance);
+    if (viewport.bottom - selectionRects.last.bottom >= popupMenuHeightNeeded) {
+      secondaryY = math.max(viewport.top + _kPopupMenuContentDistance,
+          selectionRects.last.bottom + _kPopupMenuContentDistance);
     }
 
-    // Show in center.
+    // Else, show in center.
     else {
-      secondaryY = viewport.center.dy;
+      secondaryY = viewport.center.dy - (_kPopupMenuHeight / 2.0);
     }
 
-    final arrowTipX =
-        (selectionRects.last.left + selectionRects.first.right) / 2.0;
+    final arrowTipX = (selectionRects.last.left + selectionRects.first.right) / 2.0;
 
     if (useExperimentalPopupMenu) {
       // print('building menu at $arrowTipX, $localBarTopY');
       return delegate.buildMenu(
         context,
         primaryAnchor: Offset(arrowTipX, primaryY + topOverlayHeight - 70),
-        secondaryAnchor: Offset(arrowTipX, secondaryY),
+        secondaryAnchor: Offset(arrowTipX, secondaryY - 5),
       );
     }
 
@@ -250,12 +243,10 @@ class _MaterialTextSelectionControls extends SelectionControls {
 
   /// Builder for material-style text selection handles.
   @override
-  Widget buildHandle(
-      BuildContext context, TextSelectionHandleType type, double textHeight) {
+  Widget buildHandle(BuildContext context, TextSelectionHandleType type, double textHeight) {
     final ThemeData theme = Theme.of(context);
     final Color handleColor =
-        TextSelectionTheme.of(context).selectionHandleColor ??
-            theme.colorScheme.primary;
+        TextSelectionTheme.of(context).selectionHandleColor ?? theme.colorScheme.primary;
     final Widget handle = SizedBox(
       width: _kHandleSize,
       height: _kHandleSize,
