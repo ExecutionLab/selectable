@@ -83,12 +83,13 @@ class SelectableController extends ChangeNotifier {
   bool selectFirstLine({int? key}) {
     final paragraph = _selections.cachedParagraphs.list.firstOrNull;
     if (paragraph == null) return false;
+    if (paragraph.text.isEmpty) return false;
     final startAnchor = paragraph.anchorAtCharIndex(0);
     if (startAnchor == null) return false;
     SelectionAnchor? endAnchor;
-    for (int index = 1; index < paragraph.text.length; ++index) {
+    for (var index = 1; index < paragraph.text.length; ++index) {
       final anchor = paragraph.anchorAtCharIndex(index);
-      final top = anchor?.rects?.firstOrNull?.top;
+      final top = anchor?.rects.firstOrNull?.top;
       if (top != startAnchor.rects.firstOrNull?.top) {
         endAnchor = paragraph.anchorAtCharIndex(index - 1);
         break;
