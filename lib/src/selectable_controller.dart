@@ -1,7 +1,6 @@
 // Copyright (c) 2021 Ron Booth. All rights reserved.
 // Use of this source code is governed by a license that can be found in the
 // LICENSE file.
-
 part of 'selectable.dart';
 
 /// Provides a way to be notified of selection changes and a way to select
@@ -90,9 +89,9 @@ class SelectableController extends ChangeNotifier {
     for (var index = 1; index < paragraph.text.length; ++index) {
       final anchor = paragraph.anchorAtCharIndex(index);
       final top = anchor?.rects.firstOrNull?.top ?? 0.0;
-      final startTop = startAnchor.rects.firstOrNull?.top ?? 0.0;
+      final startBottom = startAnchor.rects.firstOrNull?.bottom ?? 0.0;
 
-      if (top - startTop >= 2.0) {
+      if (top >= startBottom) {
         endAnchor = paragraph.anchorAtCharIndex(index - 1);
         break;
       }
