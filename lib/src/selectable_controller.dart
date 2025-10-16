@@ -89,8 +89,10 @@ class SelectableController extends ChangeNotifier {
     SelectionAnchor? endAnchor;
     for (var index = 1; index < paragraph.text.length; ++index) {
       final anchor = paragraph.anchorAtCharIndex(index);
-      final top = anchor?.rects.firstOrNull?.top;
-      if (top != startAnchor.rects.firstOrNull?.top) {
+      final top = anchor?.rects.firstOrNull?.top ?? 0.0;
+      final startTop = startAnchor.rects.firstOrNull?.top ?? 0.0;
+
+      if (top - startTop >= 2.0) {
         endAnchor = paragraph.anchorAtCharIndex(index - 1);
         break;
       }
